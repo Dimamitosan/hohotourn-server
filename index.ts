@@ -1,22 +1,6 @@
 import { Server } from 'socket.io'
 import { createServer } from 'http'
 import { sequelize } from './config/database'
-
-//bot
-import TelegramBot from 'node-telegram-bot-api'
-
-const token = '6304629931:AAFq7J2ONfaq9j_co_vdQRWMY0eUfZJkK6E'
-
-const bot = new TelegramBot(token, { polling: true })
-
-bot.on('message', (msg) => {
-  // ПОМЕНЯТЬ ТИП
-  const chatId = msg.chat.id
-
-  bot.sendMessage(chatId, 'Received your message')
-})
-//server
-
 sequelize.sync({ force: true }).then(() => {
   console.log('Database & tables created!')
 })
@@ -27,6 +11,33 @@ const io = new Server(httpServer, {
     origin: '*',
   },
 })
+
+//bot
+import TelegramBot from 'node-telegram-bot-api'
+
+const webAppUrl = 'https://client.ru.tuna.am'
+
+const token = '6304629931:AAFq7J2ONfaq9j_co_vdQRWMY0eUfZJkK6E'
+
+const bot = new TelegramBot(token, { polling: true })
+
+bot.on('message', async (msg) => {
+  // ПОМЕНЯТЬ ТИП msg
+
+  const chatId = msg.chat.id
+  const text = msg.text
+
+  if (text === '/start') {
+    await bot.sendMessage(chatId, 'Для игры нажмите кнопку ниже', {
+      reply_markup: {
+        inline_keyboard: [[{ text: 'играть', web_app: { url: webAppUrl } }]],
+      },
+    })
+  }
+  bot.sendMessage(chatId, 'Received your message')
+})
+
+//server
 
 type Lobby = {
   code: string
