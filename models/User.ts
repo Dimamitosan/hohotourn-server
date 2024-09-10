@@ -6,7 +6,7 @@ interface UserAttributes {
   nick: string
   coins?: number
   roomCode?: string
-  token?: string
+  telegramId?: string
 }
 
 interface UserCreationAttributes extends Optional<UserAttributes, 'id'> {}
@@ -19,7 +19,7 @@ class User
   public nick!: string
   public coins!: number
   public roomCode!: string
-  public token!: string
+  public telegramId!: string
 }
 
 User.init(
@@ -41,7 +41,7 @@ User.init(
       type: new DataTypes.STRING(10),
       allowNull: true,
     },
-    token: {
+    telegramId: {
       type: new DataTypes.STRING(),
       allowNull: false,
     },

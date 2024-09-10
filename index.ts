@@ -1,6 +1,7 @@
 import { Server } from 'socket.io'
 import { createServer } from 'http'
 import { sequelize } from './config/database'
+import User from './models/User'
 sequelize.sync({ force: true }).then(() => {
   console.log('Database & tables created!')
 })
@@ -52,6 +53,16 @@ const generateLobbyCode = () => {
 
 io.on('connection', (socket) => {
   console.log('a user connected', socket.id)
+
+  // await User.findOne({where:{telegramId:id}})
+
+  socket.on('userEnter', async ([id, nick]) => {
+    try {
+      await User.create({ telegramId: id, nick, coins: 0 })
+    } catch (e) {
+      console.log(e)
+    }
+  })
 
   socket.on('createLobby', () => {
     const code = generateLobbyCode()
